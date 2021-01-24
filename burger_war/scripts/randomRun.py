@@ -58,15 +58,24 @@ class NaviBot():
     def strategy(self):
         r = rospy.Rate(5) # change speed 5fps
 
+        self.setGoal(-0.9,0.4,0)
+        self.setGoal(-0.9,0.4,-3.1415/2)
+
+        self.setGoal(-0.9,-0.4,0)
+        self.setGoal(-0.9,-0.4,3.1415/2)
+
+
         self.setGoal(-0.5,0,0)
         self.setGoal(-0.5,0,3.1415/2)
         
         self.setGoal(0,0.5,0)
+        self.setGoal(0,0.5,-3.1415/2)
         self.setGoal(0,0.5,3.1415)
         
         self.setGoal(-0.5,0,-3.1415/2)
         
         self.setGoal(0,-0.5,0)
+        self.setGoal(0,-0.5,3.1415/2)
         self.setGoal(0,-0.5,3.1415)
 
 
