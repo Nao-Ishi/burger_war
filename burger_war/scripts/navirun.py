@@ -28,7 +28,10 @@ class NaviBot():
         self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
 
 
-
+    def clearGoal(self):
+        self.client.cancel_all_goals()
+        print 'stop_order'
+        return
 
     def setGoal(self,x,y,yaw):
         self.client.wait_for_server()
@@ -51,24 +54,47 @@ class NaviBot():
         if not wait:
             rospy.logerr("Action server not available!")
             rospy.signal_shutdown("Action server not available!")
-        else:
-            return self.client.get_result()        
+            return -1
+        get_state = self.client.get_state()
+        print("wait", wait, "get_state", get_state)
+        if get_state == 2:  # if send_goal is canceled
+            return -1
+
+        return 0       
 
 
     def strategy(self):
         r = rospy.Rate(5) # change speed 5fps
+        '''self.setGoal(-0.8,0.6,3.1415/4)
+        self.setGoal(-0.6,0.8,3.1415/4)
+        '''
+        self.setGoal(-0.9,0.4,0)
+        self.setGoal(-0.9,0.4,-3.1415/2)
+
+        self.clearGoal()
+
+        self.setGoal(-0.9,-0.4,0)
+        self.setGoal(-0.9,-0.4,3.1415/2)
 
         self.setGoal(-0.5,0,0)
         self.setGoal(-0.5,0,3.1415/2)
-        '''
+        #my area ^
+        
         self.setGoal(0,0.5,0)
+        self.setGoal(0,0.5,-3.1415/2)
         self.setGoal(0,0.5,3.1415)
+        #left area ^
         
         self.setGoal(-0.5,0,-3.1415/2)
+        #bips L2R
         
         self.setGoal(0,-0.5,0)
-        self.setGoal(0,-0.5,3.1415)'''
+        self.setGoal(0,-0.5,3.1415/2)
+        self.setGoal(0,-0.5,3.1415)
+        #right area ^
 
+        self.setGoal(0.5,0,3.1415/2)
+        #bips R2T
 
 
 if __name__ == '__main__':
