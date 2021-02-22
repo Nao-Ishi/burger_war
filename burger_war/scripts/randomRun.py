@@ -122,24 +122,24 @@ class NaoBot():
                 [0,0.5,-90],    #15
                 [0,-0.5,90],    #16
                 [0.5,0,180],     #17   
-                [-0.8,0.45,-90],#myl2myr#18
-                [-0.8,-0.45,90],#myr2myl#19
-                [0.8,0.45,-90],#enr2enl#20
-                [0.8,-0.45,90],#enl2enr#21
-                [-0.5,0,90],#1to2#22
-                [0,0.5,0],#2to4#23
-                [0.5,0,-90],#4to3#24
-                [0,-0.5,180],#3to1#25
-                [-0.5,0,180],#my#26
-                [0.5,0,0],#en#27
+                [0.8,-0.45,90],#myl2myr#18
+                [0.8,0.45,-90],#myr2myl#19
+                [-0.8,-0.45,90],#enr2enl#20
+                [-0.8,0.45,-90],#enl2enr#21
+                [0.5,0,-90],#1to2#22
+                [0,-0.5,180],#2to4#23
+                [-0.5,0,90],#4to3#24
+                [0,0.5,0],#3to1#25
+                [0.5,0,0],#my#26
+                [-0.5,0,180],#en#27
                 [-1.2,0,0],#sneak1#28
                 [0,1.2,-90],#sneak2#29
                 [0,-1.2,90],#sneak3#30
                 [1.2,0,180],#sneak4#31
-                [-0.5,0,-90],#2to1#32
-                [0,0.5,180],#4to2#33
-                [0.5,0,90],#3to4#34
-                [0,-0.5,0]#1to3#35
+                [0.5,0,90],#2to1#32
+                [0,-0.5,0],#4to2#33
+                [-0.5,0,-90],#3to4#34
+                [0,0.5,180]#1to3#35
             ]
 
 
@@ -234,7 +234,7 @@ class NaoBot():
                 if self.pre_enemy_pos == self.area[i]:
                     self.area_pnt = i
 
-            if self.estimate_enemy_pos == self.pre_enemy_pos[self.area_pnt]:
+            if self.estimate_enemy_pos == self.pre_enemy_pos:
                 print "Guessing is correct"
                 self.enemy_policy_est = True
             else:
@@ -272,10 +272,16 @@ class NaoBot():
             else:
                 self.tour_pnt = 19
         self.pre_state = STATE.PATROL
-        if self.cw == 1:
-            tour=[11,18,13,19,17,22,23,7,16,10,23,24,27,8,21,6,20,14,24,25,12,15,9,25,22,26]
+        if self.my_side == 'r':
+            if self.cw == 1:
+                tour=[11,18,13,19,17,22,23,7,16,10,23,24,27,8,21,6,20,14,24,25,12,15,9,25,22,26]
+            else:
+                tour=[13,19,11,18,17,32,35,9,15,12,35,34,27,6,20,8,21,14,34,33,10,16,7,33,32,26]
         else:
-            tour=[13,19,11,18,17,32,35,9,15,12,35,34,27,6,20,8,21,14,34,33,10,16,7,33,32,26]
+            if self.cw == 1:
+                tour=[8,21,6,20,14,24,25,12,15,9,25,22,26,11,18,13,19,17,22,23,7,16,10,23,24,27]
+            else:
+                tour=[6,20,8,21,14,34,33,10,16,7,33,32,26,13,19,11,18,17,32,35,9,15,12,35,34,27]
         self.get_target(tour[self.tour_pnt])
         self.tour_pnt = self.tour_pnt + 1
         if self.tour_pnt > len(tour)-1:
@@ -379,7 +385,7 @@ class NaoBot():
 
     def state_transition(self):
         self.enemy_policy()
-        if(rospy.Time.now().to_sec() - self.pre_time)>5:
+        if(rospy.Time.now().to_sec() - self.pre_time)>6:
             self.state_patrol()
         elif self.enemy_policy_est:
             self.state_track()
